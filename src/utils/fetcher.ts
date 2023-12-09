@@ -1,22 +1,22 @@
 import { CAFE24_API_BASE_URL, CAFE24_API_VERSION } from '../env';
 
 /**
- * @description Cafe24 API를 호출하는 함수
+ * @description cafe24 api fetcher 생성
  */
-export default async function makeFetcher({
+export default async function fetcher({
   method = 'GET',
   mallId,
   token,
-  apiUrl,
+  apiPath,
   body,
 }: {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   mallId: string;
   token: string;
-  apiUrl: string;
+  apiPath: string;
   body?: any;
 }) {
-  return fetch(`${CAFE24_API_BASE_URL.replace('{mallid}', mallId)}${apiUrl}`, {
+  return fetch(`${CAFE24_API_BASE_URL.replace('{mallid}', mallId)}${apiPath}`, {
     method,
     headers: {
       Authorization: `Bearer ${token}`,

@@ -1,5 +1,7 @@
 import makeQueryString from '../utils/makeQueryString';
-import makeFetcher from '../utils/makeFetcher';
+import fetcher from '../utils/fetcher';
+import getKSTDateString from '../utils/getKSTDateString';
+import makeRequestBody from '../utils/makeRequestBody';
 
 type GetBoardsArticlesCommentsParams = {
   mallId: string;
@@ -35,25 +37,44 @@ type GetBoardsArticlesCommentsResponse = {
   error?: { code: number; message: string };
 };
 
+type CreateBoardsArticlesCommentsParams = {
+  mallId: string;
+  token: string;
+  boardNo: number;
+  articleNo: number;
+
+  shopNo?: number; // 쇼핑몰 번호 (default: 1)
+  content: string;
+  writer: string;
+  password?: string;
+  memberId?: string;
+  rating?: number;
+  secret?: string;
+  parentCommentNo?: number;
+  inputChannel?: string;
+  createdDate?: string;
+  attachFileUrls?: {
+    no: number;
+    name: string;
+    url: string;
+  }[];
+};
+
 /**
  * @description 게시물 댓글 조회
+ * @link https://developers.cafe24.com/docs/ko/api/admin/#retrieve-a-list-of-comments-for-a-board-post
  */
 export const getBoardsArticlesComments = async ({
   mallId,
-  shopNo = 1,
   token,
   boardNo,
   articleNo,
-  offset = 0,
-  limit = 10,
+  ...params
 }: GetBoardsArticlesCommentsParams) => {
-  const apiPath = `/admin/boards/${boardNo}/articles/${articleNo}/comments`;
-  const queryString = makeQueryString({ shopNo, offset, limit });
-
-  const { comments, error } = (await makeFetcher({
+  const { comments, error } = (await fetcher({
     mallId,
     token,
-    apiUrl: `${apiPath}?${queryString}`,
+    apiPath: `/admin/boards/${boardNo}/articles/${articleNo}/comments?${makeQueryString(params)}`,
   })) as GetBoardsArticlesCommentsResponse;
 
   if (error) {
@@ -61,4 +82,37 @@ export const getBoardsArticlesComments = async ({
   }
 
   return comments;
+};
+
+/**
+ * @description 게시글 댓글 작성
+ * @link https://developers.cafe24.com/docs/ko/api/admin/#create-a-comment-for-a-board-post
+ */
+export const createBoardsArticlesComments = async ({
+  mallId,
+  token,
+  boardNo,
+  articleNo,
+
+  shopNo = 1,
+  createdDate = getKSTDateString(),
+  password = process.env.PASSWORD,
+  ...params
+}: CreateBoardsArticlesCommentsParams) => {
+  const { comment, error } = (await fetcher({
+    method: 'POST',
+    mallId,
+    token,
+    apiPath: `/admin/boards/${boardNo}/articles/${articleNo}/comments`,
+    body: makeRequestBody({
+      shopNo,
+      request: { createdDate, password, ...params },
+    }),
+  })) as { comment?: any; error?: any };
+
+  if (error) {
+    return error;
+  }
+
+  return comment;
 };

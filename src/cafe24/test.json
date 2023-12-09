@@ -1,0 +1,56 @@
+{
+    "shops": [
+        {
+            "shop_no": 1,
+            "default": "T",
+            "shop_name": "My Shop",
+            "business_country_code": "KR",
+            "language_code": "ko_KR",
+            "language_name": "Korean",
+            "currency_code": "KRW",
+            "currency_name": "South Korean Won (KRW)",
+            "reference_currency_code": "",
+            "reference_currency_name": null,
+            "pc_skin_no": 1,
+            "mobile_skin_no": 2,
+            "base_domain": "sampleid.cafe24.com",
+            "primary_domain": "samplemall.com",
+            "slave_domain": [
+                "sampledomain1.com",
+                "ko.sampledomain1.com"
+            ],
+            "active": "T",
+            "timezone": "Asia/Seoul",
+            "timezone_name": "(UTC+09:00) Seoul",
+            "date_format": "YYYY-MM-DD",
+            "time_format": "hh:mm:ss",
+            "use_reference_currency": "F"
+        },
+        {
+            "shop_no": 2,
+            "default": "F",
+            "shop_name": "My Shop USA",
+            "business_country_code": "KR",
+            "language_code": "en_US",
+            "language_name": "English",
+            "currency_code": "USD",
+            "currency_name": "United States Dollar (USD)",
+            "reference_currency_code": "",
+            "reference_currency_name": null,
+            "pc_skin_no": 3,
+            "mobile_skin_no": 4,
+            "base_domain": "sampleid.cafe24.com/shop2",
+            "primary_domain": "en.samplemall.com",
+            "slave_domain": [
+                "sampledomain2.com",
+                "en.sampledomain2.com"
+            ],
+            "active": "T",
+            "timezone": "America/Los_Angeles",
+            "timezone_name": "(UTC-08:00) Pacific Time (US & Canada)",
+            "date_format": "MM-DD-YYYY",
+            "time_format": "hh:mm:ss",
+            "use_reference_currency": "F"
+        }
+    ]
+}

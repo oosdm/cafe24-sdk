@@ -1,8 +1,7 @@
 import getKSTDateString from '../utils/getKSTDateString';
 import makeQueryString from '../utils/makeQueryString';
 import makeRequestBody from '../utils/makeRequestBody';
-import removeNullValueKeys from '../utils/removeNullValueKeys';
-import makeFetcher from '../utils/makeFetcher';
+import fetcher from '../utils/fetcher';
 
 type GetBoardsArticlesParams = {
   mallId: string;
@@ -238,6 +237,7 @@ type DeleteBoardsArticlesResponse = {
 
 /**
  * @description 게시물 조회
+ * @link https://developers.cafe24.com/docs/ko/api/admin/#retrieve-a-list-of-posts-for-a-board
  */
 export const getBoardsArticles = async ({
   mallId,
@@ -245,13 +245,10 @@ export const getBoardsArticles = async ({
   boardNo,
   ...params
 }: GetBoardsArticlesParams) => {
-  const apiPath = `/admin/boards/${boardNo}/articles`;
-  const queryString = makeQueryString(params);
-
-  const { articles, error } = (await makeFetcher({
+  const { articles, error } = (await fetcher({
     mallId,
     token,
-    apiUrl: `${apiPath}?${queryString}`,
+    apiPath: `/admin/boards/${boardNo}/articles?${makeQueryString(params)}`,
   })) as GetBoardsArticlesResponse;
 
   if (error) {
@@ -263,6 +260,7 @@ export const getBoardsArticles = async ({
 
 /**
  * @description 게시물 생성
+ * @link https://developers.cafe24.com/docs/ko/api/admin/#create-a-board-post
  */
 export const createBoardsArticles = async ({
   mallId,
@@ -272,20 +270,15 @@ export const createBoardsArticles = async ({
   createdDate = getKSTDateString(),
   ...params
 }: CreateBoardsArticlesParams) => {
-  const apiPath = `/admin/boards/${boardNo}/articles`;
-  const body = makeRequestBody({
-    shopNo,
-    requests: [{ createdDate, ...params }],
-  });
-
-  console.log('bodybody', body);
-
-  const { articles, error } = (await makeFetcher({
+  const { articles, error } = (await fetcher({
     method: 'POST',
     mallId,
     token,
-    apiUrl: apiPath,
-    body,
+    apiPath: `/admin/boards/${boardNo}/articles`,
+    body: makeRequestBody({
+      shopNo,
+      requests: [{ createdDate, ...params }],
+    }),
   })) as CreateBoardsArticlesResponse;
 
   if (error) {
@@ -297,6 +290,7 @@ export const createBoardsArticles = async ({
 
 /**
  * @description 게시물 수정
+ * @link https://developers.cafe24.com/docs/ko/api/admin/#update-a-board-post
  */
 export const updateBoardsArticles = async ({
   mallId,
@@ -306,18 +300,15 @@ export const updateBoardsArticles = async ({
   articleNo,
   ...params
 }: UpdateBoardsArticlesParams) => {
-  const apiPath = `/admin/boards/${boardNo}/articles/${articleNo}`;
-  const body = makeRequestBody({
-    shopNo,
-    requests: [removeNullValueKeys({ ...params })],
-  });
-
-  const { article, error } = (await makeFetcher({
+  const { article, error } = (await fetcher({
     method: 'PUT',
     mallId,
     token,
-    apiUrl: apiPath,
-    body,
+    apiPath: `/admin/boards/${boardNo}/articles/${articleNo}`,
+    body: makeRequestBody({
+      shopNo,
+      request: params,
+    }),
   })) as UpdateBoardsArticlesResponse;
 
   if (error) {
@@ -329,6 +320,7 @@ export const updateBoardsArticles = async ({
 
 /**
  * @description 게시물 삭제
+ * @link https://developers.cafe24.com/docs/ko/api/admin/#delete-a-board-post
  */
 export const deleteBoardsArticles = async ({
   mallId,
@@ -336,13 +328,11 @@ export const deleteBoardsArticles = async ({
   boardNo,
   articleNo,
 }: DeleteBoardsArticlesParams) => {
-  const apiPath = `/admin/boards/${boardNo}/articles/${articleNo}`;
-
-  const { error } = (await makeFetcher({
+  const { error } = (await fetcher({
     method: 'DELETE',
     mallId,
     token,
-    apiUrl: apiPath,
+    apiPath: `/admin/boards/${boardNo}/articles/${articleNo}`,
   })) as DeleteBoardsArticlesResponse;
 
   if (error) {
